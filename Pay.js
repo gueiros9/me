@@ -105,9 +105,9 @@ function onPaymentAuthorized(paymentData) {
                 resolve({
                     transactionState: 'ERROR',
                     error: {
-                    intent: 'PAYMENT_AUTHORIZATION',
-                    message: 'Insufficient funds',
-                    reason: 'PAYMENT_DATA_INVALID'
+                       intent: 'PAYMENT_AUTHORIZATION',
+                       message: 'Insufficient funds',
+                       reason: 'PAYMENT_DATA_INVALID'
                     }
                 });
             });
