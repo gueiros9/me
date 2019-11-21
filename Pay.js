@@ -8,15 +8,16 @@
         <meta name="robots" content="noindex, nofollow"></meta>
         <meta name="googlebot" content="noindex, nofollow"></meta>
         <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+        
         <script
          type="text/javascript"
          src="/js/lib/dummy.js"    
         ></script>
+        
         <link rel="stylesheet" type="text/css" href="/css/result-light.css"></link>
         <style id="compiled-css" type="text/css"></style>
 
         <script type="text/javascript"
-        
          const baseRequest = {
              apiVersion: 2,
              apiVersionMinor: 0
@@ -30,8 +31,8 @@
              "parameters": {
                  "protocolVersion": "ECv2",
                  "publicKey": "AIzaSyCRq4xiasSjvfLYwj7B_o-MWZqHL3082gY"
-                 }
-             }
+                }
+            }
          */
         
          const tokenizationSpecification = {
@@ -113,13 +114,19 @@
             }
 
          function getGoogleTransactionInfo() {
-                 return {
-                     currencyCode: 'BRL',
-                     totalPriceStatus: 'FINAL',
-                     // set to cart total
-                     totalPrice: '1.00'
-                    };
-                }
+             return {
+                 /** adicionar taxas e direcionar para o shopdin
+                 * 12% total 
+                 * 2% ong
+                 * 4% cashback
+                 * 6% shopdin
+                 */                  
+                 currencyCode: 'BRL',
+                 totalPriceStatus: 'FINAL',
+                 // set to cart total
+                 totalPrice: '1.00'
+                };
+            }
 
          function prefetchGooglePaymentData() {
              const paymentDataRequest = getGooglePaymentDataRequest();
@@ -138,8 +145,8 @@
              const paymentsClient = getGooglePaymentsClient();
              paymentsClient.loadPaymentData(paymentDataRequest)
              .then(function(paymentData) {
-                     // handle the response
-                     processPayment(paymentData);
+                 // handle the response
+                 processPayment(paymentData);
                 })
              .catch(function(err) {
                  // show error in developer console for debugging
@@ -161,13 +168,13 @@
         </script>
 
         <script>
-            if(window.parent && window.parent.parent){
+         if(window.parent && window.parent.parent){
              window.parent.parent.postMessage(["resultsFrame", {
                  height: document.body.getBoundingClientRect().height,
                  slug: "sp2mvuro"
                 }], "*")
             }
-            window.name = "result"
+         window.name = "result"
         </script>
     </body>
 </html>
