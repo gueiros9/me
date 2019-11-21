@@ -77,23 +77,23 @@ function getGooglePaymentDataRequest() {
 }
 
 /**
-
-*/
+ *
+ */
 function getGooglePaymentsClient() {
   if ( paymentsClient === null ) {
     paymentsClient = new google.payments.api.PaymentsClient({
         environment: 'TEST',
-      paymentDataCallbacks: {
-        onPaymentAuthorized: onPaymentAuthorized
-      }
+        paymentDataCallbacks: {
+           onPaymentAuthorized: onPaymentAuthorized
+        }
     });
   }
   return paymentsClient;
 }
 
 /**
-
-*/
+ *
+ */
 function onPaymentAuthorized(paymentData) {
         return new Promise(function(resolve, reject){
     // handle the response
@@ -115,8 +115,8 @@ function onPaymentAuthorized(paymentData) {
 }
 
 /**
-
-*/
+ *
+ */
 function onGooglePayLoaded() {
   const paymentsClient = getGooglePaymentsClient();
   paymentsClient.isReadyToPay(getGoogleIsReadyToPayRequest())
@@ -132,8 +132,8 @@ function onGooglePayLoaded() {
 }
 
 /**
-
-*/
+ *
+ */
 function addGooglePayButton() {
   const paymentsClient = getGooglePaymentsClient();
   const button =
@@ -142,7 +142,7 @@ function addGooglePayButton() {
 }
 
 /**
-
+ *
  */
 function getGoogleTransactionInfo() {
   return {
@@ -157,16 +157,20 @@ function getGoogleTransactionInfo() {
           type: "TAX",
           price: "1.00",
         }
+      /** 
+       * Adicionar taxas (12%)
+       * 2% ong, 4% cashback, 6% shopdin
+       */
     ],
     currencyCode: "BRL",
     totalPriceStatus: "FINAL",
-    totalPrice: "990000098",
+    totalPrice: "990000098",   //requisitar o preço do produto
     totalPriceLabel: "Total"
   };
 }
 
 /**
- * Show Google Pay payment sheet when Google Pay payment button is clicked
+ * Abrir janela de pagamento
  */
 function onGooglePaymentButtonClicked() {
   const paymentDataRequest = getGooglePaymentDataRequest();
@@ -177,7 +181,7 @@ function onGooglePaymentButtonClicked() {
 }
 
 /**
-
+ *
  */
 function processPayment(paymentData) {
         return new Promise(function(resolve, reject) {
