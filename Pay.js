@@ -95,23 +95,23 @@ function getGooglePaymentsClient() {
  *
  */
 function onPaymentAuthorized(paymentData) {
-        return new Promise(function(resolve, reject){
-    // handle the response
-    processPayment(paymentData)
-    .then(function() {
-      resolve({transactionState: 'SUCCESS'});
-    })
-    .catch(function() {
-      resolve({
-        transactionState: 'ERROR',
-        error: {
-          intent: 'PAYMENT_AUTHORIZATION',
-          message: 'Insufficient funds',
-          reason: 'PAYMENT_DATA_INVALID'
-        }
-      });
-        });
-  });
+        return new Promise(function(resolve, reject){
+            // handle the response
+            processPayment(paymentData)
+            .then(function() {
+                resolve({transactionState: 'SUCCESS'});
+            })
+            .catch(function() {
+                resolve({
+                    transactionState: 'ERROR',
+                    error: {
+                    intent: 'PAYMENT_AUTHORIZATION',
+                    message: 'Insufficient funds',
+                    reason: 'PAYMENT_DATA_INVALID'
+                    }
+                });
+            });
+        });
 }
 
 /**
