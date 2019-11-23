@@ -60,7 +60,21 @@
                 );
          
              // 5 - Carregar a biblioteca JavaScript da API Google Pay (body)
- 
+            
+             // Consultar lista de verificação de integração
+             function getGooglePaymentsClient() {
+                 if ( paymentsClient === null ) {
+                     paymentsClient = new google.payments.api.PaymentsClient({
+                         environment: 'TEST',
+                         paymentDataCallbacks: {
+                             onPaymentAuthorized: onPaymentAuthorized
+                            }
+                        });
+                    }
+                 return paymentsClient;
+                }
+
+
              // 6 - Determinar a disponibilidade para pagar com a API Google Pay
              let paymentsClient = null;
  
@@ -70,6 +84,30 @@
                          allowedPaymentMethods: [baseCardPaymentMethod]
                         }
                     );
+                }
+            
+             // Chame isReadyToPay() para determinar se a API Google Pay é compatível com o dispositivo ou navegador atual 
+             // para as formas de pagamento especificadas.
+             function onGooglePayLoaded() {
+                 const paymentsClient = getGooglePaymentsClient();
+                 paymentsClient.isReadyToPay(getGoogleIsReadyToPayRequest())
+                 .then(function(response) {
+                     if (response.result) {
+                         addGooglePayButton();
+                        }
+                    })
+                 .catch(function(err) {
+                     // show error in developer console for debugging
+                     console.error(err);
+                    });
+                }
+
+             // 7 - Criar botão de pagamento
+             function addGooglePayButton() {
+                 const paymentsClient = getGooglePaymentsClient();
+                 const button =
+                 paymentsClient.createButton({onClick: onGooglePaymentButtonClicked});
+                 document.getElementById('container').appendChild(button);
                 }
 
              // 8 - Criar um objeto PaymentDataRequest
@@ -87,19 +125,7 @@
                  return paymentDataRequest;
                 }
 
-             // 5 - Consultar lista de verificação de integração
-             function getGooglePaymentsClient() {
-                 if ( paymentsClient === null ) {
-                     paymentsClient = new google.payments.api.PaymentsClient({
-                         environment: 'TEST',
-                         paymentDataCallbacks: {
-                             onPaymentAuthorized: onPaymentAuthorized
-                            }
-                        });
-                    }
-                 return paymentsClient;
-                }
-
+            
              /**
              *
              */
@@ -123,32 +149,16 @@
                     });
                 }   
 
-             // 6 - Chame isReadyToPay() para determinar se a API Google Pay é compatível com o dispositivo ou navegador atual 
-             // para as formas de pagamento especificadas.
-             function onGooglePayLoaded() {
-                 const paymentsClient = getGooglePaymentsClient();
-                 paymentsClient.isReadyToPay(getGoogleIsReadyToPayRequest())
-                 .then(function(response) {
-                     if (response.result) {
-                         addGooglePayButton();
-                        }
-                    })
-                 .catch(function(err) {
-                     // show error in developer console for debugging
-                     console.error(err);
-                    });
-                }
-
-             // 7 - Criar botão de pagamento
-             function addGooglePayButton() {
-                 const paymentsClient = getGooglePaymentsClient();
-                 const button =
-                 paymentsClient.createButton({onClick: onGooglePaymentButtonClicked});
-                 document.getElementById('container').appendChild(button);
-                }
              /**
               *
               */
+             function onGooglePaymentButtonClicked() {
+                 const paymentDataRequest = getGooglePaymentDataRequest();
+                 paymentDataRequest.transactionInfo = getGoogleTransactionInfo();
+                 const paymentsClient = getGooglePaymentsClient();
+                 paymentsClient.loadPaymentData(paymentDataRequest);
+                }
+
              function getGoogleTransactionInfo() {
                  return {
                      displayItems: [
@@ -173,13 +183,8 @@
                      totalPrice: "990000098",   //requisitar o preço do produto
                      totalPriceLabel: "Total"
                     };
-                }
-
-             function onGooglePaymentButtonClicked() {
-                 const paymentDataRequest = getGooglePaymentDataRequest();
-                 paymentDataRequest.transactionInfo = getGoogleTransactionInfo();
                  const paymentsClient = getGooglePaymentsClient();
-                 paymentsClient.loadPaymentData(paymentDataRequest);
+                 paymentsClient.prefetchPaymentData(paymentDataRequest);
                 }
 
              // 9 - Registrar o manipulador de eventos para o gesto do usuário
