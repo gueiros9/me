@@ -11,13 +11,13 @@
          <style id="compiled-css" type="text/css"></style>
 
          <script type="text/javascript"         
-             // 1 - Versão da API Google Pay
+             // - Versão da API Google Pay
              const baseRequest = {
                  apiVersion: 2,
                  apiVersionMinor: 0
                 };
 
-             // 2 - Escolher um método de tokenização de pagamento
+             // - Escolher um método de tokenização de pagamento
              /** Direto (API)
              const tokenizationSpecification = {
                  "type": "DIRECT",
@@ -40,11 +40,11 @@
                     }
                 }
             
-             // 3 - Redes de cartões de pagamento compatíveis
+             // - Redes de cartões de pagamento compatíveis
              const allowedCardNetworks = ["AMEX", "DISCOVER", "INTERAC", "JCB", "MASTERCARD", "VISA"];
              const allowedCardAuthMethods = ["PAN_ONLY", "CRYPTOGRAM_3DS"];
             
-             // 4 - Formas de pagamento permitidas   
+             // - Formas de pagamento permitidas   
              const baseCardPaymentMethod = {
                  type: 'CARD',
                  parameters: {
@@ -59,7 +59,7 @@
                     }
                 );
          
-             // 5 - Carregar a biblioteca JavaScript da API Google Pay (body)
+             // - Carregar a biblioteca JavaScript da API Google Pay (body)
             
              // Consultar lista de verificação de integração
              function getGooglePaymentsClient() {
@@ -75,7 +75,7 @@
                 }
 
 
-             // 6 - Determinar a disponibilidade para pagar com a API Google Pay
+             // - Determinar a disponibilidade para pagar com a API Google Pay
              let paymentsClient = null;
  
              function getGoogleIsReadyToPayRequest() {
@@ -102,7 +102,7 @@
                     });
                 }
 
-             // 7 - Criar botão de pagamento
+             // - Criar botão de pagamento
              function addGooglePayButton() {
                  const paymentsClient = getGooglePaymentsClient();
                  const button =
@@ -110,7 +110,7 @@
                  document.getElementById('container').appendChild(button);
                 }
 
-             // 8 - Criar um objeto PaymentDataRequest
+             // - Criar um objeto PaymentDataRequest
              function getGooglePaymentDataRequest() {
                  const paymentDataRequest = Object.assign({}, baseRequest);
                  paymentDataRequest.allowedPaymentMethods = [cardPaymentMethod];
@@ -187,7 +187,7 @@
                  paymentsClient.prefetchPaymentData(paymentDataRequest);
                 }
 
-             // 9 - Registrar o manipulador de eventos para o gesto do usuário
+             // - Registrar o manipulador de eventos para o gesto do usuário
              function processPayment(paymentData) {
                  return new Promise(function(resolve, reject) {
                      setTimeout(function() {
