@@ -1,0 +1,16 @@
+{
+    "short_name" : "med",
+    "name" : "Clinica",
+    "start_url" : ".",
+    "display" : "standalone",
+    "theme_color" : "#ffffff",
+    "background_color" : "#000000",
+    "description" : "Página de login",
+    "icons" : [
+        {
+            "src" : "img/logo.png",
+            "type" : "image/png",
+            "sizes" : "980x980"
+        }
+    ]
+}
