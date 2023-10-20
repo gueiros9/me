@@ -1,73 +1,50 @@
-import tkinter as tk
-from tkinter import ttk, messagebox
-from db_conn import conectar, fechar_conexao
 from subprocess import call
+import tkinter as tk
+from tkinter import ttk
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from db_conn import conectar, fechar_conexao
 
-def open_window(script_name):
-    call(["python", f"{script_name}.py"])
+def open_window(script_name, ano, mes):
+    call(["python", f"{script_name}.py", ano, mes])
 
-class JanelaGraficos:
-    def __init__(self, root):
-        self.root = root
-        self.root.title("Gráficos de Gastos por Categoria")
+def exibir_grafico_despesas(ano, mes):
+    # Conecte-se ao banco de dados
+    conexao = conectar()
+    if not conexao:
+        print("Erro ao conectar ao banco de dados.")
+        return
 
-        # Configurar o estilo para os widgets
-        estilo = ttk.Style()
-        estilo.configure("TButton", font=('Helvetica', 10, 'bold'))
-        estilo.configure("TLabel", font=('Helvetica', 10, 'bold'))
-        estilo.configure("TCombobox", font=('Helvetica', 10, 'bold'))
-        estilo.configure("TFrame")
+    cursor = conexao.cursor()
 
-        # Lógica para obter dados do banco de dados e criar gráficos aqui
-        dados = self.obter_dados_do_banco()
+    # Filtrar as despesas com base no ano e mês
+    cursor.execute("SELECT category, SUM(amount) FROM expenses WHERE YEAR(date) = %s AND MONTH(date) = %s GROUP BY category", (ano, mes))
+    resultado = cursor.fetchall()
 
-        # Exemplo de gráfico de pizza
-        categorias = []
-        valores = []
+    if not resultado:
+        print("Nenhum dado encontrado para o mês e ano selecionados.")
+        fechar_conexao(conexao)
+        return
 
-        for categoria, valor in dados:
-            categorias.append(categoria)
-            valores.append(valor)
+    categorias = [item[0] for item in resultado]
+    valores = [item[1] for item in resultado]
 
-        fig, ax = plt.subplots()
-        ax.pie(valores, labels=categorias, autopct='%1.2f%%', startangle=90)
-        ax.axis('equal')  # Assegura que o gráfico de pizza é desenhado como um círculo
+    # Criar o gráfico de pizza
+    plt.figure(figsize=(6, 6))
+    plt.pie(valores, labels=categorias, autopct='%1.1f%%', startangle=140)
+    plt.title(f"Gastos por Categoria em {mes}/{ano}")
+    plt.axis('equal')
 
-        # Criar um widget de tela de desenho do Tkinter
-        canvas = FigureCanvasTkAgg(fig, master=self.root)
-        canvas.draw()
+    # Exibir o gráfico
+    plt.show()
 
-        # Exibir o widget de tela de desenho
-        canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
-
-    def obter_dados_do_banco(self):
-        # Conectar ao banco de dados
-        conexao = conectar()
-        if not conexao:
-            messagebox.showerror("Erro", "Erro ao conectar ao banco de dados.")
-            return []
-
-        try:
-            cursor = conexao.cursor(dictionary=True)
-            cursor.execute("SELECT category, SUM(amount) as total FROM expenses GROUP BY category")
-            dados = cursor.fetchall()
-            return [(dado['category'], dado['total']) for dado in dados]
-        except Exception as e:
-            messagebox.showerror("Erro", f"Erro ao obter dados do banco de dados: {str(e)}")
-            return []
-        finally:
-            fechar_conexao(conexao)
+    # Fechar a conexão ao banco de dados
+    fechar_conexao(conexao)
 
 if __name__ == "__main__":
-    # Conectar ao banco de dados
-    conexao = conectar()
+    import sys
 
-    if conexao:
-        root = tk.Tk()
-        app = JanelaGraficos(root)
-        root.mainloop()
-
-        # Fechar a conexão ao sair da aplicação
-        fechar_conexao(conexao)
+    if len(sys.argv) != 3:
+        print("Uso: statsDespesas.py ano mes")
+    else:
+        ano, mes = sys.argv[1], sys.argv[2]
+        exibir_grafico_despesas(ano, mes)
