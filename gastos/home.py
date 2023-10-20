@@ -19,6 +19,13 @@ class JanelaInicial:
         self.root = root
         self.root.title("Gerenciamento de Gastos Pessoais")
 
+        # Definir as dimensões da janela
+        self.root.geometry("371x247")  # Largura x Altura
+
+        # Obter as dimensões da janela
+        largura_janela = self.root.winfo_width()
+        altura_janela = self.root.winfo_height()
+
         # Conectar ao banco de dados
         conexao = conectar()
         if conexao:
@@ -26,13 +33,17 @@ class JanelaInicial:
         else:
             messagebox.showerror("Erro", "Erro ao conectar ao banco de dados.")
 
-        # Criar botões para direcionar para outras funcionalidades
-        btn_adicionar = ttk.Button(root, text="Adicionar Gasto", command=self.abrir_adicionar_gasto)
-        btn_visualizar = ttk.Button(root, text="Visualizar Gastos", command=self.abrir_visualizar_gastos)
-        btn_alterar_remover = ttk.Button(root, text="Alterar/Remover Gasto", command=self.abrir_alterar_remover_gasto)
-        btn_visualizar_stats = ttk.Button(root, text="Visualizar Estatísticas", command=self.abrir_visualizar_estatisticas)
+        # Criar um frame para centralizar os botões
+        frame_botoes = ttk.Frame(self.root)
+        frame_botoes.place(relx=0.5, rely=0.5, anchor="center")
 
-        # Posicionar os botões na janela
+        # Criar botões para direcionar para outras funcionalidades
+        btn_adicionar = ttk.Button(frame_botoes, text="Adicionar Gasto", command=self.abrir_adicionar_gasto)
+        btn_visualizar = ttk.Button(frame_botoes, text="Visualizar Gastos", command=self.abrir_visualizar_gastos)
+        btn_alterar_remover = ttk.Button(frame_botoes, text="Alterar/Remover Gasto", command=self.abrir_alterar_remover_gasto)
+        btn_visualizar_stats = ttk.Button(frame_botoes, text="Visualizar Estatísticas", command=self.abrir_visualizar_estatisticas)
+
+        # Posicionar os botões no frame
         btn_adicionar.pack(pady=10)
         btn_visualizar.pack(pady=10)
         btn_alterar_remover.pack(pady=10)
